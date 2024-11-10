@@ -9,7 +9,7 @@ import (
     "time"
 
 	"github.com/spf13/cobra"
-    // "github.com/hardikkum444/go-do-it/models"
+    "github.com/hardikkum444/go-do-it/storage"
 
 )
 
@@ -37,10 +37,14 @@ type Todos []Todo
 
 var todos Todos
 
+storage = storage.NewStorage[Todos]("todos.json")
+
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
+
     rootCmd.AddCommand(addCmd)
+    rootCmd.AddCommand(printCmd)
     // rootCmd.AddCommand(listCmd)
     // rootCmd.AddCommand(delCmd)
     // rootCmd.AddCommand(toggleCmd)

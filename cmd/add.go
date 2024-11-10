@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 man44 <man44@tutamail.com>
 
 */
 
@@ -15,8 +15,6 @@ import (
 
 )
 
-var todos1 Todos
-
 var addCmd = &cobra.Command{
     Use:   "add [title]",
     Short: "Add a new todo",
@@ -26,16 +24,15 @@ var addCmd = &cobra.Command{
         title := args[0]
         todos.add(title) 
         fmt.Printf("Added todo: %s\n", title)
+        fmt.Println("Current todos:", todos)
     },
 }
 
-func init() {
-    rootCmd.AddCommand(addCmd)
-}
+// func init() {
+//     rootCmd.AddCommand(addCmd)
+// }
 
 func(todos *Todos) add(title string) {
-
-    t := *todos
 
     todo := Todo{
         Title : title,
@@ -44,8 +41,8 @@ func(todos *Todos) add(title string) {
         CompletedAt : nil,
     }
 
-    t = append(t, todo)
-    fmt.Println(todo)
+    *todos = append(*todos, todo)
+    // fmt.Println(*todos)
 }
 
 
