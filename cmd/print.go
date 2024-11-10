@@ -1,12 +1,12 @@
 /*
-Copyright © 2024 NAME HERE <EMAIL ADDRESS>
+Copyright © 2024 man44 <man44@tutamail.com>
 
 */
 package cmd
 
 import (
-	// "fmt"
     "github.com/aquasecurity/table" 
+    "github.com/hardikkum444/go-do-it/storage"
     "time"
 	"github.com/spf13/cobra"
     "os"
@@ -24,11 +24,15 @@ var printCmd = &cobra.Command{
 
 func(todos *Todos) print() {
 
+    storage := storage.NewStorage[Todos]("todos.json")
+    todosall := Todos{}
+    storage.Load(&todosall)
+
     table := table.New(os.Stdout)
     table.SetRowLines(false)
     table.SetHeaders("#", "Title", "Completed", "Created At", "Completed At")
 
-    for index, t := range *todos {
+    for index, t := range todosall {
         completed := "❌"
         completedAt := ""
 
@@ -36,13 +40,9 @@ func(todos *Todos) print() {
             completed = "✅"
             if t.CompletedAt != nil{
                 completedAt = t.CompletedAt.Format(time.RFC1123)
-
             }
         }
-
         table.AddRow(strconv.Itoa(index), t.Title, completed, t.CreatedAt.Format(time.RFC1123), completedAt)
     }
-
     table.Render()
-
 }

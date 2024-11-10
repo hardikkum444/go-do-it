@@ -7,12 +7,9 @@ package cmd
 
 import (
     "fmt"
-    // "os"
     "time"
     "github.com/hardikkum444/go-do-it/storage"
-
     "github.com/spf13/cobra"
-    // "github.com/hardikkum444/go-do-it/models"
 
 )
 
@@ -25,13 +22,8 @@ var addCmd = &cobra.Command{
         title := args[0]
         add(title) 
         fmt.Printf("Added todo: %s\n", title)
-        fmt.Println("Current todos:", todos)
     },
 }
-
-// func init() {
-//     rootCmd.AddCommand(addCmd)
-// }
 
 func add(title string) {
 
