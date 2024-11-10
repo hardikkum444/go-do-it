@@ -7,6 +7,7 @@ package cmd
 import (
 	"os"
     "time"
+    "errors"
 
 	"github.com/spf13/cobra"
     "github.com/hardikkum444/go-do-it/storage"
@@ -37,18 +38,27 @@ type Todos []Todo
 
 var todos Todos
 
-var Storage *storage.Storage[Todos]
+// var Storage *storage.Storage[Todos]
+
+func validateIndex(index int) error {
+
+    storage := storage.NewStorage[Todos]("todos.json")
+    todosall := Todos{}
+    storage.Load(&todosall)
+
+    if index < 0 || index >= len(todosall){
+        return errors.New("invalid index")
+    }
+    return nil
+}
 
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-
     rootCmd.AddCommand(addCmd)
     rootCmd.AddCommand(printCmd)
     // rootCmd.AddCommand(listCmd)
-    // rootCmd.AddCommand(delCmd)
+    rootCmd.AddCommand(deleteCmd)
     // rootCmd.AddCommand(toggleCmd)
 
 }
-
-
