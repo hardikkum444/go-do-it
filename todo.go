@@ -102,7 +102,3 @@ func(todos *Todos) print() {
     table.Render()
 
 }
-
-
-
-
