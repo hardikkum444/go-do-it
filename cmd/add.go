@@ -9,6 +9,7 @@ import (
     "fmt"
     // "os"
     "time"
+    "github.com/hardikkum444/go-do-it/storage"
 
     "github.com/spf13/cobra"
     // "github.com/hardikkum444/go-do-it/models"
@@ -22,7 +23,7 @@ var addCmd = &cobra.Command{
     Args:  cobra.ExactArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
         title := args[0]
-        todos.add(title) 
+        add(title) 
         fmt.Printf("Added todo: %s\n", title)
         fmt.Println("Current todos:", todos)
     },
@@ -32,7 +33,11 @@ var addCmd = &cobra.Command{
 //     rootCmd.AddCommand(addCmd)
 // }
 
-func(todos *Todos) add(title string) {
+func add(title string) {
+
+    storage := storage.NewStorage[Todos]("todos.json")
+    todosall := Todos{}
+    storage.Load(&todosall)
 
     todo := Todo{
         Title : title,
@@ -41,8 +46,6 @@ func(todos *Todos) add(title string) {
         CompletedAt : nil,
     }
 
-    *todos = append(*todos, todo)
-    // fmt.Println(*todos)
+    todosall = append(todosall, todo)
+    storage.Save(todosall)
 }
-
-

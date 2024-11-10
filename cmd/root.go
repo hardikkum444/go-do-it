@@ -37,7 +37,7 @@ type Todos []Todo
 
 var todos Todos
 
-storage = storage.NewStorage[Todos]("todos.json")
+var Storage *storage.Storage[Todos]
 
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
