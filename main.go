@@ -1,6 +1,5 @@
 /*
 Copyright © 2024 man44 <man44@tutamail.com>
-
 */
 package main
 
