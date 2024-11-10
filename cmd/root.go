@@ -36,8 +36,6 @@ type Todos []Todo
 
 var todos Todos
 
-// var Storage *storage.Storage[Todos]
-
 func validateIndex(index int) error {
 
 	storage := storage.NewStorage[Todos]("todos.json")
@@ -55,8 +53,9 @@ func init() {
 
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(printCmd)
-	// rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(deleteCmd)
-	// rootCmd.AddCommand(toggleCmd)
+	rootCmd.AddCommand(toggleCmd)
+	rootCmd.AddCommand(editCmd)
 
 }
