@@ -6,8 +6,11 @@ package cmd
 
 import (
 	"os"
+    "time"
 
 	"github.com/spf13/cobra"
+    // "github.com/hardikkum444/go-do-it/models"
+
 )
 
 var rootCmd = &cobra.Command{
@@ -23,8 +26,25 @@ func Execute() {
 	}
 }
 
+type Todo struct{
+    Title string
+    Completed bool
+    CreatedAt time.Time
+    CompletedAt *time.Time
+}
+
+type Todos []Todo 
+
+var todos Todos
+
 func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+    rootCmd.AddCommand(addCmd)
+    // rootCmd.AddCommand(listCmd)
+    // rootCmd.AddCommand(delCmd)
+    // rootCmd.AddCommand(toggleCmd)
+
 }
 
 
