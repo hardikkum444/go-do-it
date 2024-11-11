@@ -36,7 +36,7 @@ func (todos *Todos) print() {
 		completedAt := ""
 
 		if t.Completed {
-			completed = "✅"
+			completed = "✔️"
 			if t.CompletedAt != nil {
 				completedAt = t.CompletedAt.Format(time.RFC1123)
 			}
