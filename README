@@ -9,5 +9,5 @@ arch download
     https://aur.archlinux.org/packages/go-do-it
     https://github.com/hardikkum444/go-do-it/releases
 
-run go-do-it help for --help
+run go-do-it --help for help
 
