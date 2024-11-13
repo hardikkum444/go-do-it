@@ -14,7 +14,7 @@ import (
 
 var addCmd = &cobra.Command{
 	Use:   "add [title]",
-	Short: "Add a new todo",
+	Short: "add a new todo",
 	Long:  `Add a new todo item with the specified title.`,
 	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {

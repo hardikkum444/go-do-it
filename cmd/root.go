@@ -49,13 +49,12 @@ func validateIndex(index int) error {
 }
 
 func init() {
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(printCmd)
-	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(deleteCmd)
 	rootCmd.AddCommand(toggleCmd)
+	rootCmd.AddCommand(delallCmd)
 	rootCmd.AddCommand(editCmd)
 
 }
