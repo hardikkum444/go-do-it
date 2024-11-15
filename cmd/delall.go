@@ -15,8 +15,8 @@ var delallCmd = &cobra.Command{
 	Short: "deleting all items of the list",
 	Long:  "delall will delete all items present in your todo list",
 	Run: func(cmd *cobra.Command, args []string) {
-        delall()
-        fmt.Println("deleted all items")
+		delall()
+		fmt.Println("deleted all items")
 	},
 }
 
