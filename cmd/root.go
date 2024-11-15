@@ -56,5 +56,6 @@ func init() {
 	rootCmd.AddCommand(toggleCmd)
 	rootCmd.AddCommand(delallCmd)
 	rootCmd.AddCommand(editCmd)
+	rootCmd.AddCommand(tuiCmd)
 
 }
