@@ -29,7 +29,7 @@ func (todos *Todos) print() {
 
 	table := table.New(os.Stdout)
 	table.SetRowLines(false)
-    table.SetHeaders("#", "Title", "Deadline", "Notes", "Completed", "Created At", "Completed At")
+	table.SetHeaders("#", "Title", "Deadline", "Notes", "Completed", "Created At", "Completed At")
 
 	for index, t := range todosall {
 		completed := "❌"

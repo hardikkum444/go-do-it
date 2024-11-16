@@ -28,8 +28,8 @@ func Execute() {
 type Todo struct {
 	Title       string
 	Completed   bool
-    Deadline    string
-    Notes       string
+	Deadline    string
+	Notes       string
 	CreatedAt   time.Time
 	CompletedAt *time.Time
 }

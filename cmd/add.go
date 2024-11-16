@@ -20,7 +20,7 @@ var addCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		title := args[0]
 		deadline := args[1]
-        notes := args[2]
+		notes := args[2]
 		add(title, deadline, notes)
 		fmt.Printf("Added todo: %s\n", title)
 	},
@@ -34,8 +34,8 @@ func add(title string, deadline string, notes string) {
 
 	todo := Todo{
 		Title:       title,
-        Deadline:    deadline,
-        Notes:       notes,
+		Deadline:    deadline,
+		Notes:       notes,
 		Completed:   false,
 		CreatedAt:   time.Now().UTC(),
 		CompletedAt: nil,

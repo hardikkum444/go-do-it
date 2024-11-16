@@ -64,6 +64,7 @@ func renderAdd(app *tview.Application) {
 		AddFormItem(taskNotes).
 		AddButton("add", func() {
 			addToTable(taskTitle.GetText(), taskDeadline.GetText(), taskNotes.GetText())
+			renderDone()
 		}).
 		AddButton("quit", func() {
 			renderQuit()
@@ -85,8 +86,8 @@ func addToTable(title string, deadline string, notes string) {
 
 	todo := Todo{
 		Title:       title,
-        Deadline: deadline,
-        Notes: notes,
+		Deadline:    deadline,
+		Notes:       notes,
 		Completed:   false,
 		CreatedAt:   time.Now().UTC(),
 		CompletedAt: nil,
@@ -106,6 +107,25 @@ func renderQuit() {
 			if buttonLabel == "quit" {
 				app.Stop()
 			} else if buttonLabel == "cancle" {
+				if err := app.SetRoot(list, true).SetFocus(list).Run(); err != nil {
+					panic(err)
+				}
+			}
+		})
+
+	if err := app.SetRoot(modal, false).EnableMouse(true).Run(); err != nil {
+		panic(err)
+	}
+
+}
+
+func renderDone() {
+
+	modal := tview.NewModal().
+		SetText("successful").
+		AddButtons([]string{"ok"}).
+		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+			if buttonLabel == "ok" {
 				if err := app.SetRoot(list, true).SetFocus(list).Run(); err != nil {
 					panic(err)
 				}
