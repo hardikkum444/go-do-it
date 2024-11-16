@@ -63,7 +63,7 @@ func renderAdd(app *tview.Application) {
 		AddFormItem(taskDeadline).
 		AddFormItem(taskNotes).
 		AddButton("add", func() {
-			addToTable(taskTitle.GetText())
+			addToTable(taskTitle.GetText(), taskDeadline.GetText(), taskNotes.GetText())
 		}).
 		AddButton("quit", func() {
 			renderQuit()
@@ -77,7 +77,7 @@ func renderAdd(app *tview.Application) {
 
 }
 
-func addToTable(title string) {
+func addToTable(title string, deadline string, notes string) {
 
 	storage := storage.NewStorage[Todos]("todos.json")
 	todosall := Todos{}
@@ -85,6 +85,8 @@ func addToTable(title string) {
 
 	todo := Todo{
 		Title:       title,
+        Deadline: deadline,
+        Notes: notes,
 		Completed:   false,
 		CreatedAt:   time.Now().UTC(),
 		CompletedAt: nil,
