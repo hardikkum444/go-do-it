@@ -35,7 +35,7 @@ func createMenuList() *tview.List {
 			renderAdd()
 		}).
 		AddItem("edit", "edit a new task", 'e', func() {
-            renderEdit()
+			renderEdit()
 		}).
 		AddItem("delete", "delete a task", 'd', func() {
 			renderDel()
@@ -95,11 +95,11 @@ func renderAdd() {
 
 func renderEdit() {
 
-    taskTitle := tview.NewInputField().SetLabel("task -> ").SetFieldWidth(20)
+	taskTitle := tview.NewInputField().SetLabel("task -> ").SetFieldWidth(20)
 	taskDeadline := tview.NewInputField().SetLabel("deadline -> ").SetFieldWidth(20)
 	taskNotes := tview.NewInputField().SetLabel("notes -> ").SetFieldWidth(20)
 
-    storage := storage.NewStorage[Todos]("todos.json")
+	storage := storage.NewStorage[Todos]("todos.json")
 	todosall := Todos{}
 	storage.Load(&todosall)
 
@@ -112,28 +112,33 @@ func renderEdit() {
 		SetLabel("select task index to edit (hit enter): ").
 		SetOptions(taskIndexes, nil)
 
-    form := tview.NewForm().
-    AddFormItem(taskIndex).
-    AddFormItem(taskTitle).
-    AddFormItem(taskDeadline).
-    AddFormItem(taskNotes).
-    AddButton("done", func() {
+	form := tview.NewForm().
+		AddFormItem(taskIndex).
+		AddFormItem(taskTitle).
+		AddFormItem(taskDeadline).
+		AddFormItem(taskNotes).
+		AddButton("done", func() {
 
-    }).
-    AddButton("back", func() {
-		if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
-			panic(err)
-		}
-	}).
-	AddButton("quit", func() {
-		renderQuit()
-	})
+			_, stringIndex := taskIndex.GetCurrentOption()
+			index, _ := strconv.Atoi(stringIndex)
+			editTable(index, taskTitle.GetText(), taskDeadline.GetText(), taskNotes.GetText())
+			renderDone()
 
-    form.SetBorder(true).SetTitle(" edit task ").SetTitleAlign(tview.AlignCenter)
+		}).
+		AddButton("back", func() {
+			if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+				panic(err)
+			}
+		}).
+		AddButton("quit", func() {
+			renderQuit()
+		})
 
-    if err := app.SetRoot(form, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
-        panic(err)
-    }
+	form.SetBorder(true).SetTitle(" edit task ").SetTitleAlign(tview.AlignCenter)
+
+	if err := app.SetRoot(form, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
+		panic(err)
+	}
 }
 
 func renderDel() {
@@ -233,6 +238,39 @@ func addToTable(title string, deadline string, notes string) {
 	}
 
 	todosall = append(todosall, todo)
+	storage.Save(todosall)
+
+}
+
+func editTable(index int, title string, deadline string, notes string) {
+
+	if title == "" {
+
+		modal := tview.NewModal().
+			SetText("title cannot be empty").
+			AddButtons([]string{"ok"}).
+			SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+				if buttonLabel == "ok" {
+					if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+						panic(err)
+					}
+				}
+			})
+
+		if err := app.SetRoot(modal, true).EnableMouse(true).SetFocus(modal).Run(); err != nil {
+			panic(err)
+		}
+
+	}
+
+	storage := storage.NewStorage[Todos]("todos.json")
+	todosall := Todos{}
+	storage.Load(&todosall)
+
+	todosall[index].Title = title
+	todosall[index].Deadline = deadline
+	todosall[index].Notes = notes
+
 	storage.Save(todosall)
 
 }
