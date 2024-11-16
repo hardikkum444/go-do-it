@@ -31,8 +31,8 @@ var (
 func createMenuList(app *tview.Application) *tview.List {
 
 	list = tview.NewList().
-		AddItem("add", "add a new task", 'n', func() {
-			renderAdd(app)
+		AddItem("add", "add a new task", 'a', func() {
+			renderAdd()
 		}).
 		AddItem("delete", "delete a task", 'd', func() {
 			renderDel()
@@ -59,7 +59,7 @@ func renderMenu() {
 
 }
 
-func renderAdd(app *tview.Application) {
+func renderAdd() {
 
 	taskTitle := tview.NewInputField().SetLabel("task -> ").SetFieldWidth(20)
 	taskDeadline := tview.NewInputField().SetLabel("deadline -> ").SetFieldWidth(20)
@@ -153,6 +153,25 @@ func renderDelall() {
 }
 
 func addToTable(title string, deadline string, notes string) {
+
+	if title == "" {
+
+		modal := tview.NewModal().
+			SetText("title cannot be empty").
+			AddButtons([]string{"ok"}).
+			SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+				if buttonLabel == "ok" {
+					if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+						panic(err)
+					}
+				}
+			})
+
+		if err := app.SetRoot(modal, true).EnableMouse(true).SetFocus(modal).Run(); err != nil {
+			panic(err)
+		}
+
+	}
 
 	storage := storage.NewStorage[Todos]("todos.json")
 	todosall := Todos{}

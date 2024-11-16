@@ -33,7 +33,15 @@ func (todos *Todos) print() {
 
 	for index, t := range todosall {
 		completed := "❌"
-		completedAt := ""
+		completedAt := "-"
+
+		if t.Deadline == "" {
+			t.Deadline = "-"
+		}
+
+		if t.Notes == "" {
+			t.Notes = "-"
+		}
 
 		if t.Completed {
 			completed = "✔️"
