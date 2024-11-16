@@ -73,11 +73,16 @@ func renderAdd(app *tview.Application) {
 			addToTable(taskTitle.GetText(), taskDeadline.GetText(), taskNotes.GetText())
 			renderDone()
 		}).
+		AddButton("back", func() {
+			if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+				panic(err)
+			}
+		}).
 		AddButton("quit", func() {
 			renderQuit()
 		})
 
-	form.SetBorder(true).SetTitle("add a task").SetTitleAlign(tview.AlignCenter)
+	form.SetBorder(true).SetTitle(" add a task ").SetTitleAlign(tview.AlignCenter)
 
 	if err := app.SetRoot(form, true).EnableMouse(true).Run(); err != nil {
 		panic(err)
@@ -108,11 +113,16 @@ func renderDel() {
 			delFromTable(indexToDel)
 			renderDone()
 		}).
+		AddButton("back", func() {
+			if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+				panic(err)
+			}
+		}).
 		AddButton("quit", func() {
 			renderQuit()
 		})
 
-	form.SetBorder(true).SetTitle("delete a task").SetTitleAlign(tview.AlignCenter)
+	form.SetBorder(true).SetTitle(" delete a task ").SetTitleAlign(tview.AlignCenter)
 
 	if err := app.SetRoot(form, true).EnableMouse(true).Run(); err != nil {
 		panic(err)
