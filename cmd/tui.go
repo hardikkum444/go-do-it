@@ -5,6 +5,7 @@ package cmd
 
 import (
 	// "fmt"
+	"strconv"
 	"time"
 
 	"github.com/hardikkum444/go-do-it/storage"
@@ -33,6 +34,9 @@ func createMenuList(app *tview.Application) *tview.List {
 		AddItem("add", "add a new task", 'n', func() {
 			renderAdd(app)
 		}).
+		AddItem("delete", "delete a task", 'd', func() {
+			renderDel()
+		}).
 		AddItem("quit", "quit application", 'q', func() {
 			renderQuit()
 		})
@@ -46,7 +50,7 @@ func renderMenu() {
 
 	list = createMenuList(app)
 
-	if err := app.SetRoot(list, true).SetFocus(list).Run(); err != nil {
+	if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
 		panic(err)
 	}
 
@@ -78,6 +82,40 @@ func renderAdd(app *tview.Application) {
 
 }
 
+func renderDel() {
+
+	storage := storage.NewStorage[Todos]("todos.json")
+	todosall := Todos{}
+	storage.Load(&todosall)
+
+	taskIndexes := []string{}
+	for index, _ := range todosall {
+		taskIndexes = append(taskIndexes, strconv.Itoa(index))
+	}
+
+	taskIndex := tview.NewDropDown().
+		SetLabel("select an index (hit enter): ").
+		SetOptions(taskIndexes, nil)
+
+	form = tview.NewForm().
+		AddFormItem(taskIndex).
+		AddButton("del", func() {
+            _, option := taskIndex.GetCurrentOption()
+            indexToDel , _ := strconv.Atoi(option)
+            delFromTable(indexToDel)
+        }).
+		AddButton("quit", func() {
+			renderQuit()
+		})
+
+	form.SetBorder(true).SetTitle("delete a task").SetTitleAlign(tview.AlignCenter)
+
+	if err := app.SetRoot(form, true).EnableMouse(true).Run(); err != nil {
+		panic(err)
+	}
+
+}
+
 func addToTable(title string, deadline string, notes string) {
 
 	storage := storage.NewStorage[Todos]("todos.json")
@@ -94,6 +132,17 @@ func addToTable(title string, deadline string, notes string) {
 	}
 
 	todosall = append(todosall, todo)
+	storage.Save(todosall)
+
+}
+
+func delFromTable(index int) {
+
+    storage := storage.NewStorage[Todos]("todos.json")
+    todosall := Todos{}
+    storage.Load(&todosall)
+
+    todosall = append(todosall[:index], todosall[index+1:]...)
 	storage.Save(todosall)
 
 }
@@ -122,7 +171,7 @@ func renderQuit() {
 func renderDone() {
 
 	modal := tview.NewModal().
-		SetText("successful").
+		SetText("successful!").
 		AddButtons([]string{"ok"}).
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "ok" {
