@@ -28,11 +28,14 @@ var (
 	form *tview.Form
 )
 
-func createMenuList(app *tview.Application) *tview.List {
+func createMenuList() *tview.List {
 
 	list = tview.NewList().
 		AddItem("add", "add a new task", 'a', func() {
 			renderAdd()
+		}).
+		AddItem("edit", "edit a new task", 'e', func() {
+            renderEdit()
 		}).
 		AddItem("delete", "delete a task", 'd', func() {
 			renderDel()
@@ -51,7 +54,7 @@ func renderMenu() {
 
 	app = tview.NewApplication()
 
-	list = createMenuList(app)
+	list = createMenuList()
 
 	if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
 		panic(err)
@@ -88,6 +91,49 @@ func renderAdd() {
 		panic(err)
 	}
 
+}
+
+func renderEdit() {
+
+    taskTitle := tview.NewInputField().SetLabel("task -> ").SetFieldWidth(20)
+	taskDeadline := tview.NewInputField().SetLabel("deadline -> ").SetFieldWidth(20)
+	taskNotes := tview.NewInputField().SetLabel("notes -> ").SetFieldWidth(20)
+
+    storage := storage.NewStorage[Todos]("todos.json")
+	todosall := Todos{}
+	storage.Load(&todosall)
+
+	taskIndexes := []string{}
+	for index, _ := range todosall {
+		taskIndexes = append(taskIndexes, strconv.Itoa(index))
+	}
+
+	taskIndex := tview.NewDropDown().
+		SetLabel("select task index to edit (hit enter): ").
+		SetOptions(taskIndexes, nil)
+
+    form := tview.NewForm().
+    AddFormItem(taskIndex).
+    AddFormItem(taskTitle).
+    AddFormItem(taskDeadline).
+    AddFormItem(taskNotes).
+    AddButton("done", func() {
+
+    }).
+    AddButton("back", func() {
+		if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+			panic(err)
+		}
+	}).
+	AddButton("quit", func() {
+		renderQuit()
+	})
+
+    form.SetBorder(true).SetTitle(" edit task ").SetTitleAlign(tview.AlignCenter)
+
+    if err := app.SetRoot(form, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
+        panic(err)
+    }
 }
 
 func renderDel() {
