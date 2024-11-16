@@ -37,6 +37,9 @@ func createMenuList(app *tview.Application) *tview.List {
 		AddItem("delete", "delete a task", 'd', func() {
 			renderDel()
 		}).
+		AddItem("delete all", "delete all tasks", 'x', func() {
+			renderDelall()
+		}).
 		AddItem("quit", "quit application", 'q', func() {
 			renderQuit()
 		})
@@ -100,10 +103,11 @@ func renderDel() {
 	form = tview.NewForm().
 		AddFormItem(taskIndex).
 		AddButton("del", func() {
-            _, option := taskIndex.GetCurrentOption()
-            indexToDel , _ := strconv.Atoi(option)
-            delFromTable(indexToDel)
-        }).
+			_, option := taskIndex.GetCurrentOption()
+			indexToDel, _ := strconv.Atoi(option)
+			delFromTable(indexToDel)
+			renderDone()
+		}).
 		AddButton("quit", func() {
 			renderQuit()
 		})
@@ -111,6 +115,28 @@ func renderDel() {
 	form.SetBorder(true).SetTitle("delete a task").SetTitleAlign(tview.AlignCenter)
 
 	if err := app.SetRoot(form, true).EnableMouse(true).Run(); err != nil {
+		panic(err)
+	}
+
+}
+
+func renderDelall() {
+
+	modal := tview.NewModal().
+		SetText("delete all items in todo list").
+		AddButtons([]string{"delete", "cancel"}).
+		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+			if buttonLabel == "delete" {
+				delallFromTable()
+				renderDone()
+			} else if buttonLabel == "cancel" {
+				if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+					panic(err)
+				}
+			}
+		})
+
+	if err := app.SetRoot(modal, true).EnableMouse(true).SetFocus(modal).Run(); err != nil {
 		panic(err)
 	}
 
@@ -138,13 +164,23 @@ func addToTable(title string, deadline string, notes string) {
 
 func delFromTable(index int) {
 
-    storage := storage.NewStorage[Todos]("todos.json")
-    todosall := Todos{}
-    storage.Load(&todosall)
+	storage := storage.NewStorage[Todos]("todos.json")
+	todosall := Todos{}
+	storage.Load(&todosall)
 
-    todosall = append(todosall[:index], todosall[index+1:]...)
+	todosall = append(todosall[:index], todosall[index+1:]...)
 	storage.Save(todosall)
 
+}
+
+func delallFromTable() {
+
+	storage := storage.NewStorage[Todos]("todos.json")
+	todosall := Todos{}
+	storage.Load(&todosall)
+
+	todosall = Todos{}
+	storage.Save(todosall)
 }
 
 func renderQuit() {
@@ -156,7 +192,7 @@ func renderQuit() {
 			if buttonLabel == "quit" {
 				app.Stop()
 			} else if buttonLabel == "cancle" {
-				if err := app.SetRoot(list, true).SetFocus(list).Run(); err != nil {
+				if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
 					panic(err)
 				}
 			}
@@ -175,7 +211,7 @@ func renderDone() {
 		AddButtons([]string{"ok"}).
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "ok" {
-				if err := app.SetRoot(list, true).SetFocus(list).Run(); err != nil {
+				if err := app.SetRoot(list, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
 					panic(err)
 				}
 			}
