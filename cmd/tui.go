@@ -77,9 +77,9 @@ func renderMenu() {
 
 func renderAdd() {
 
-	taskTitle := tview.NewInputField().SetLabel("task -> ").SetFieldWidth(20)
-	taskDeadline := tview.NewInputField().SetLabel("deadline -> ").SetFieldWidth(20)
-	taskNotes := tview.NewInputField().SetLabel("notes -> ").SetFieldWidth(20)
+	taskTitle := tview.NewInputField().SetLabel("Task ").SetFieldWidth(20)
+	taskDeadline := tview.NewInputField().SetLabel("Deadline ").SetFieldWidth(20)
+	taskNotes := tview.NewInputField().SetLabel("Notes ").SetFieldWidth(20)
 
 	form := tview.NewForm().
 		AddFormItem(taskTitle).
@@ -98,9 +98,15 @@ func renderAdd() {
 			renderQuit()
 		})
 
-	form.SetBorder(true).SetTitle(" add a task ").SetTitleAlign(tview.AlignCenter)
+	form.SetBorder(false).SetTitle(" add a task ").SetTitleAlign(tview.AlignCenter)
 
-	if err := app.SetRoot(form, true).EnableMouse(true).Run(); err != nil {
+	flexAdd := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(tview.NewTextArea(), 0, 1, false).
+		AddItem(form, 0, 1, false).
+		AddItem(tview.NewTextArea(), 0, 1, false)
+
+	if err := app.SetRoot(flexAdd, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
 		panic(err)
 	}
 
@@ -108,9 +114,9 @@ func renderAdd() {
 
 func renderEdit() {
 
-	taskTitle := tview.NewInputField().SetLabel("task -> ").SetFieldWidth(20)
-	taskDeadline := tview.NewInputField().SetLabel("deadline -> ").SetFieldWidth(20)
-	taskNotes := tview.NewInputField().SetLabel("notes -> ").SetFieldWidth(20)
+	taskTitle := tview.NewInputField().SetLabel("Task ").SetFieldWidth(20)
+	taskDeadline := tview.NewInputField().SetLabel("Deadline ").SetFieldWidth(20)
+	taskNotes := tview.NewInputField().SetLabel("Notes ").SetFieldWidth(20)
 
 	storage := storage.NewStorage[Todos]("todos.json")
 	todosall := Todos{}
@@ -122,7 +128,7 @@ func renderEdit() {
 	}
 
 	taskIndex := tview.NewDropDown().
-		SetLabel("select task index to edit (hit enter): ").
+		SetLabel("Select task index to edit (hit enter): ").
 		SetOptions(taskIndexes, nil)
 
 	form := tview.NewForm().
@@ -147,11 +153,18 @@ func renderEdit() {
 			renderQuit()
 		})
 
-	form.SetBorder(true).SetTitle(" edit task ").SetTitleAlign(tview.AlignCenter)
+	form.SetBorder(false).SetTitle(" edit task ").SetTitleAlign(tview.AlignCenter)
 
-	if err := app.SetRoot(form, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
+	flexAdd := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(tview.NewTextArea(), 0, 1, false).
+		AddItem(form, 0, 1, false).
+		AddItem(tview.NewTextArea(), 0, 1, false)
+
+	if err := app.SetRoot(flexAdd, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
 		panic(err)
 	}
+
 }
 
 func renderDel() {
@@ -166,12 +179,12 @@ func renderDel() {
 	}
 
 	taskIndex := tview.NewDropDown().
-		SetLabel("select an index (hit enter): ").
+		SetLabel("Select an index (hit enter): ").
 		SetOptions(taskIndexes, nil)
 
 	form = tview.NewForm().
 		AddFormItem(taskIndex).
-		AddButton("del", func() {
+		AddButton("delete", func() {
 			_, option := taskIndex.GetCurrentOption()
 			indexToDel, _ := strconv.Atoi(option)
 			delFromTable(indexToDel)
@@ -186,9 +199,13 @@ func renderDel() {
 			renderQuit()
 		})
 
-	form.SetBorder(true).SetTitle(" delete a task ").SetTitleAlign(tview.AlignCenter)
+	flexAdd := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(tview.NewTextArea(), 0, 1, false).
+		AddItem(form, 0, 1, false).
+		AddItem(tview.NewTextArea(), 0, 1, false)
 
-	if err := app.SetRoot(form, true).EnableMouse(true).Run(); err != nil {
+	if err := app.SetRoot(flexAdd, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
 		panic(err)
 	}
 
@@ -197,7 +214,7 @@ func renderDel() {
 func renderDelall() {
 
 	modal := tview.NewModal().
-		SetText("delete all items in todo list").
+		SetText("Delete all items in todo list").
 		AddButtons([]string{"delete", "cancel"}).
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "delete" {
@@ -312,7 +329,7 @@ func delallFromTable() {
 func renderQuit() {
 
 	modal := tview.NewModal().
-		SetText("do you want to exit tui?").
+		SetText("Do you want to exit tui?").
 		AddButtons([]string{"cancle", "quit"}).
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "quit" {
@@ -333,7 +350,7 @@ func renderQuit() {
 func renderDone() {
 
 	modal := tview.NewModal().
-		SetText("successful!").
+		SetText("Successful!").
 		AddButtons([]string{"ok"}).
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "ok" {
