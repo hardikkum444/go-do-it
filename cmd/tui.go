@@ -5,11 +5,11 @@ package cmd
 
 import (
 	// "fmt"
+	"time"
 
 	"github.com/hardikkum444/go-do-it/storage"
 	"github.com/rivo/tview"
 	"github.com/spf13/cobra"
-	"time"
 )
 
 var tuiCmd = &cobra.Command{
@@ -17,7 +17,7 @@ var tuiCmd = &cobra.Command{
 	Short: "open go-do-it tui",
 	Long:  "open the terminal user interface",
 	Run: func(cmd *cobra.Command, args []string) {
-		menu()
+		renderMenu()
 	},
 }
 
@@ -30,17 +30,17 @@ var (
 func createMenuList(app *tview.Application) *tview.List {
 
 	list = tview.NewList().
-		AddItem("add a task", "", 'n', func() {
+		AddItem("add", "add a new task", 'n', func() {
 			renderAdd(app)
 		}).
-		AddItem("quit", "", 'q', func() {
-			app.Stop()
+		AddItem("quit", "quit application", 'q', func() {
+			renderQuit()
 		})
 
 	return list
 }
 
-func menu() {
+func renderMenu() {
 
 	app = tview.NewApplication()
 
@@ -63,22 +63,18 @@ func renderAdd(app *tview.Application) {
 		AddFormItem(taskDeadline).
 		AddFormItem(taskNotes).
 		AddButton("add", func() {
-			sendData(taskTitle.GetText())
+			addToTable(taskTitle.GetText())
 		}).
 		AddButton("quit", func() {
-			app.Stop()
+			renderQuit()
 		})
 
-	form.SetBorder(true).SetTitle("add a task").SetTitleAlign(tview.AlignLeft)
+	form.SetBorder(true).SetTitle("add a task").SetTitleAlign(tview.AlignCenter)
 
-	if err := app.SetRoot(form, true).Run(); err != nil {
+	if err := app.SetRoot(form, true).EnableMouse(true).Run(); err != nil {
 		panic(err)
 	}
 
-}
-
-func sendData(title string) {
-	addToTable(title)
 }
 
 func addToTable(title string) {
@@ -96,5 +92,26 @@ func addToTable(title string) {
 
 	todosall = append(todosall, todo)
 	storage.Save(todosall)
+
+}
+
+func renderQuit() {
+
+	modal := tview.NewModal().
+		SetText("do you want to exit tui?").
+		AddButtons([]string{"cancle", "quit"}).
+		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
+			if buttonLabel == "quit" {
+				app.Stop()
+			} else if buttonLabel == "cancle" {
+				if err := app.SetRoot(list, true).SetFocus(list).Run(); err != nil {
+					panic(err)
+				}
+			}
+		})
+
+	if err := app.SetRoot(modal, false).EnableMouse(true).Run(); err != nil {
+		panic(err)
+	}
 
 }
