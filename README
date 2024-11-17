@@ -2,12 +2,28 @@ go-do-it
 ========
 go-do-it is a simple todo list manager built using go.
 
+terminal-user-interface
+=======================
+go-do-it supports a minimalistic tui for better navigation.
+run `go-do-it tui` for accessing the tui.
+
 arch download
 =============
 `sudo pacman -Sy go-do-it`
-
     https://aur.archlinux.org/packages/go-do-it
+
+download binaries
+=================
+download binaries for windows, android and linux
     https://github.com/hardikkum444/go-do-it/releases
 
-run go-do-it --help for help
+build manually
+==============
+1. clone the repository
+    `git clone https://github.com/hardikkum444/go-do-it`
 
+2. for system specific binary run `go build` in the cloned directory
+
+3. run the created binary as an executable
+
+4. run `go-do-it --help` for help
