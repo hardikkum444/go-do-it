@@ -6,10 +6,12 @@ package cmd
 import (
 	// "fmt"
 	"strconv"
+	// "strings"
 	"time"
 
 	"github.com/hardikkum444/go-do-it/storage"
 	"github.com/rivo/tview"
+	// "github.com/gdamore/tcell/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -37,6 +39,9 @@ func createMenuList() *tview.List {
 		}).
 		AddItem("edit", "edit a new task", 'e', func() {
 			renderEdit()
+		}).
+		AddItem("toggle", "toggle completion of task", 't', func() {
+			renderToggle()
 		}).
 		AddItem("delete", "delete a task", 'd', func() {
 			renderDel()
@@ -77,9 +82,9 @@ func renderMenu() {
 
 func renderAdd() {
 
-	taskTitle := tview.NewInputField().SetLabel("Task ").SetFieldWidth(20)
-	taskDeadline := tview.NewInputField().SetLabel("Deadline ").SetFieldWidth(20)
-	taskNotes := tview.NewInputField().SetLabel("Notes ").SetFieldWidth(20)
+	taskTitle := tview.NewInputField().SetLabel("Add a task to todo list ").SetFieldWidth(20)
+	taskDeadline := tview.NewInputField().SetLabel("Set a completion deadline ").SetFieldWidth(20)
+	taskNotes := tview.NewInputField().SetLabel("Add notes ").SetFieldWidth(20)
 
 	form := tview.NewForm().
 		AddFormItem(taskTitle).
@@ -154,6 +159,50 @@ func renderEdit() {
 		})
 
 	form.SetBorder(false).SetTitle(" edit task ").SetTitleAlign(tview.AlignCenter)
+
+	flexAdd := tview.NewFlex().
+		SetDirection(tview.FlexRow).
+		AddItem(tview.NewTextArea(), 0, 1, false).
+		AddItem(form, 0, 1, false).
+		AddItem(tview.NewTextArea(), 0, 1, false)
+
+	if err := app.SetRoot(flexAdd, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
+		panic(err)
+	}
+
+}
+
+func renderToggle() {
+
+	storage := storage.NewStorage[Todos]("todos.json")
+	todosall := Todos{}
+	storage.Load(&todosall)
+
+	taskIndexes := []string{}
+	for index, _ := range todosall {
+		taskIndexes = append(taskIndexes, strconv.Itoa(index))
+	}
+
+	taskIndex := tview.NewDropDown().
+		SetLabel("Select a task to toggle completion (hit enter): ").
+		SetOptions(taskIndexes, nil)
+
+	form = tview.NewForm().
+		AddFormItem(taskIndex).
+		AddButton("toggle", func() {
+			_, option := taskIndex.GetCurrentOption()
+			indexToToggle, _ := strconv.Atoi(option)
+			toggleTask(indexToToggle)
+			renderDone()
+		}).
+		AddButton("back", func() {
+			if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+				panic(err)
+			}
+		}).
+		AddButton("quit", func() {
+			renderQuit()
+		})
 
 	flexAdd := tview.NewFlex().
 		SetDirection(tview.FlexRow).
@@ -300,6 +349,24 @@ func editTable(index int, title string, deadline string, notes string) {
 	todosall[index].Title = title
 	todosall[index].Deadline = deadline
 	todosall[index].Notes = notes
+
+	storage.Save(todosall)
+
+}
+
+func toggleTask(index int) {
+
+	storage := storage.NewStorage[Todos]("todos.json")
+	todosall := Todos{}
+	storage.Load(&todosall)
+
+	isCompleted := (todosall)[index].Completed
+	if !isCompleted {
+		completionTime := time.Now()
+		todosall[index].CompletedAt = &completionTime
+	}
+
+	todosall[index].Completed = !isCompleted
 
 	storage.Save(todosall)
 
