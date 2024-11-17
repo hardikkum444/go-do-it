@@ -21,15 +21,24 @@ var tuiCmd = &cobra.Command{
 	Long:  "open the terminal user interface",
 	Run: func(cmd *cobra.Command, args []string) {
 		renderMenu()
-	},
-}
-
+	}}
 var (
-	app  *tview.Application
-	list *tview.List
-	form *tview.Form
-	flex *tview.Flex
+	app          *tview.Application
+	list         *tview.List
+	form         *tview.Form
+	centeredRoot tview.Primitive
 )
+
+func Center(width, height int, p tview.Primitive) tview.Primitive {
+	return tview.NewFlex().
+		AddItem(nil, 0, 1, false).
+		AddItem(tview.NewFlex().
+			SetDirection(tview.FlexRow).
+			AddItem(nil, 0, 1, false).
+			AddItem(p, height, 1, true).
+			AddItem(nil, 0, 1, false), width, 1, true).
+		AddItem(nil, 0, 1, false)
+}
 
 func createMenuList() *tview.List {
 
@@ -60,21 +69,11 @@ func renderMenu() {
 
 	app = tview.NewApplication()
 
-	textarea1 := tview.NewTextArea().
-		SetBorder(false)
-
-	textarea2 := tview.NewTextArea().
-		SetBorder(false)
-
 	list = createMenuList()
 
-	flex = tview.NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(textarea1, 0, 1, false).
-		AddItem(list, 0, 1, false).
-		AddItem(textarea2, 0, 1, false)
+	centeredRoot = Center(40, 13, list)
 
-	if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+	if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 		panic(err)
 	}
 
@@ -95,7 +94,7 @@ func renderAdd() {
 			renderDone()
 		}).
 		AddButton("back", func() {
-			if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 				panic(err)
 			}
 		}).
@@ -105,13 +104,9 @@ func renderAdd() {
 
 	form.SetBorder(false).SetTitle(" add a task ").SetTitleAlign(tview.AlignCenter)
 
-	flexAdd := tview.NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(tview.NewTextArea(), 0, 1, false).
-		AddItem(form, 0, 1, false).
-		AddItem(tview.NewTextArea(), 0, 1, false)
+	centeredForm := Center(50, 10, form)
 
-	if err := app.SetRoot(flexAdd, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
+	if err := app.SetRoot(centeredForm, true).EnableMouse(true).SetFocus(centeredForm).Run(); err != nil {
 		panic(err)
 	}
 
@@ -150,7 +145,7 @@ func renderEdit() {
 
 		}).
 		AddButton("back", func() {
-			if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 				panic(err)
 			}
 		}).
@@ -160,13 +155,9 @@ func renderEdit() {
 
 	form.SetBorder(false).SetTitle(" edit task ").SetTitleAlign(tview.AlignCenter)
 
-	flexAdd := tview.NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(tview.NewTextArea(), 0, 1, false).
-		AddItem(form, 0, 1, false).
-		AddItem(tview.NewTextArea(), 0, 1, false)
+	centeredForm := Center(63, 12, form)
 
-	if err := app.SetRoot(flexAdd, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
+	if err := app.SetRoot(centeredForm, true).EnableMouse(true).SetFocus(centeredForm).Run(); err != nil {
 		panic(err)
 	}
 
@@ -196,7 +187,7 @@ func renderToggle() {
 			renderDone()
 		}).
 		AddButton("back", func() {
-			if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 				panic(err)
 			}
 		}).
@@ -204,13 +195,9 @@ func renderToggle() {
 			renderQuit()
 		})
 
-	flexAdd := tview.NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(tview.NewTextArea(), 0, 1, false).
-		AddItem(form, 0, 1, false).
-		AddItem(tview.NewTextArea(), 0, 1, false)
+	centeredForm := Center(55, 6, form)
 
-	if err := app.SetRoot(flexAdd, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
+	if err := app.SetRoot(centeredForm, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
 		panic(err)
 	}
 
@@ -240,7 +227,7 @@ func renderDel() {
 			renderDone()
 		}).
 		AddButton("back", func() {
-			if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 				panic(err)
 			}
 		}).
@@ -248,13 +235,9 @@ func renderDel() {
 			renderQuit()
 		})
 
-	flexAdd := tview.NewFlex().
-		SetDirection(tview.FlexRow).
-		AddItem(tview.NewTextArea(), 0, 1, false).
-		AddItem(form, 0, 1, false).
-		AddItem(tview.NewTextArea(), 0, 1, false)
+	centeredForm := Center(55, 6, form)
 
-	if err := app.SetRoot(flexAdd, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
+	if err := app.SetRoot(centeredForm, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
 		panic(err)
 	}
 
@@ -270,7 +253,7 @@ func renderDelall() {
 				delallFromTable()
 				renderDone()
 			} else if buttonLabel == "cancel" {
-				if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+				if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 					panic(err)
 				}
 			}
@@ -291,7 +274,7 @@ func addToTable(title string, deadline string, notes string) {
 			AddButtons([]string{"ok"}).
 			SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 				if buttonLabel == "ok" {
-					if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+					if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 						panic(err)
 					}
 				}
@@ -330,7 +313,7 @@ func editTable(index int, title string, deadline string, notes string) {
 			AddButtons([]string{"ok"}).
 			SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 				if buttonLabel == "ok" {
-					if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+					if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 						panic(err)
 					}
 				}
@@ -402,7 +385,7 @@ func renderQuit() {
 			if buttonLabel == "quit" {
 				app.Stop()
 			} else if buttonLabel == "cancle" {
-				if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+				if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 					panic(err)
 				}
 			}
@@ -421,7 +404,7 @@ func renderDone() {
 		AddButtons([]string{"ok"}).
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "ok" {
-				if err := app.SetRoot(flex, true).EnableMouse(true).SetFocus(list).Run(); err != nil {
+				if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 					panic(err)
 				}
 			}
