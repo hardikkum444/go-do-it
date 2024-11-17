@@ -5,6 +5,7 @@ package cmd
 
 import (
 	// "fmt"
+	"os"
 	"strconv"
 	// "strings"
 	"time"
@@ -31,13 +32,13 @@ var (
 
 func Center(width, height int, p tview.Primitive) tview.Primitive {
 	return tview.NewFlex().
-		AddItem(nil, 0, 1, false).
+		AddItem(tview.NewTextView(), 0, 1, false).
 		AddItem(tview.NewFlex().
 			SetDirection(tview.FlexRow).
-			AddItem(nil, 0, 1, false).
+			AddItem(tview.NewTextView(), 0, 1, false).
 			AddItem(p, height, 1, true).
-			AddItem(nil, 0, 1, false), width, 1, true).
-		AddItem(nil, 0, 1, false)
+			AddItem(tview.NewTextView(), 0, 1, false), width, 1, true).
+		AddItem(tview.NewTextView(), 0, 1, false)
 }
 
 func createMenuList() *tview.List {
@@ -94,7 +95,7 @@ func renderAdd() {
 		AddFormItem(taskNotes).
 		AddButton("add", func() {
 			addToTable(taskTitle.GetText(), taskDeadline.GetText(), taskNotes.GetText())
-            renderMessage("Task added successfully!")
+			renderMessage("Task added successfully!")
 		}).
 		AddButton("back", func() {
 			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
@@ -144,7 +145,7 @@ func renderEdit() {
 			_, stringIndex := taskIndex.GetCurrentOption()
 			index, _ := strconv.Atoi(stringIndex)
 			editTable(index, taskTitle.GetText(), taskDeadline.GetText(), taskNotes.GetText())
-            renderMessage("Task edited successfully!")
+			renderMessage("Task edited successfully!")
 
 		}).
 		AddButton("back", func() {
@@ -187,7 +188,7 @@ func renderToggle() {
 			_, option := taskIndex.GetCurrentOption()
 			indexToToggle, _ := strconv.Atoi(option)
 			toggleTask(indexToToggle)
-            renderMessage("Completion toggled successfully!")
+			renderMessage("Completion toggled successfully!")
 		}).
 		AddButton("back", func() {
 			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
@@ -213,7 +214,7 @@ func renderDel() {
 	storage.Load(&todosall)
 
 	if len(todosall) == 0 {
-        renderMessage("Error: 0 items in list!")
+		renderMessage("Error: 0 items in list!")
 	}
 
 	taskIndexes := []string{}
@@ -231,7 +232,7 @@ func renderDel() {
 			_, option := taskIndex.GetCurrentOption()
 			indexToDel, _ := strconv.Atoi(option)
 			delFromTable(indexToDel)
-            renderMessage("Task deleted successfully!")
+			renderMessage("Task deleted successfully!")
 		}).
 		AddButton("back", func() {
 			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
@@ -258,7 +259,7 @@ func renderDelall() {
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "delete" {
 				delallFromTable()
-                renderMessage("Tasks deleted successfully!")
+				renderMessage("Tasks deleted successfully!")
 			} else if buttonLabel == "cancel" {
 				if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 					panic(err)
@@ -391,6 +392,7 @@ func renderQuit() {
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "quit" {
 				app.Stop()
+				os.Exit(0)
 			} else if buttonLabel == "cancle" {
 				if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 					panic(err)
