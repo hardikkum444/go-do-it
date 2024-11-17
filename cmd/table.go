@@ -65,7 +65,7 @@ func renderTable() {
 		AddItem(table, 0, 3, false).
 		AddItem(form, 0, 1, false)
 
-	center := Center(130, 40, flex1)
+	center := Center(120, 40, flex1)
 
 	if err := app.SetRoot(center, true).EnableMouse(true).SetFocus(form).Run(); err != nil {
 		panic(err)

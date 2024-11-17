@@ -74,7 +74,7 @@ func renderMenu() {
 
 	list = createMenuList()
 
-	centeredRoot = Center(40, 13, list)
+	centeredRoot = Center(40, 14, list)
 
 	if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 		panic(err)
@@ -94,7 +94,7 @@ func renderAdd() {
 		AddFormItem(taskNotes).
 		AddButton("add", func() {
 			addToTable(taskTitle.GetText(), taskDeadline.GetText(), taskNotes.GetText())
-			renderDone()
+            renderMessage("Task added successfully!")
 		}).
 		AddButton("back", func() {
 			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
@@ -144,7 +144,7 @@ func renderEdit() {
 			_, stringIndex := taskIndex.GetCurrentOption()
 			index, _ := strconv.Atoi(stringIndex)
 			editTable(index, taskTitle.GetText(), taskDeadline.GetText(), taskNotes.GetText())
-			renderDone()
+            renderMessage("Task edited successfully!")
 
 		}).
 		AddButton("back", func() {
@@ -187,7 +187,7 @@ func renderToggle() {
 			_, option := taskIndex.GetCurrentOption()
 			indexToToggle, _ := strconv.Atoi(option)
 			toggleTask(indexToToggle)
-			renderDone()
+            renderMessage("Completion toggled successfully!")
 		}).
 		AddButton("back", func() {
 			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
@@ -212,6 +212,10 @@ func renderDel() {
 	todosall := Todos{}
 	storage.Load(&todosall)
 
+	if len(todosall) == 0 {
+        renderMessage("Error: 0 items in list!")
+	}
+
 	taskIndexes := []string{}
 	for index, _ := range todosall {
 		taskIndexes = append(taskIndexes, strconv.Itoa(index))
@@ -227,7 +231,7 @@ func renderDel() {
 			_, option := taskIndex.GetCurrentOption()
 			indexToDel, _ := strconv.Atoi(option)
 			delFromTable(indexToDel)
-			renderDone()
+            renderMessage("Task deleted successfully!")
 		}).
 		AddButton("back", func() {
 			if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
@@ -254,7 +258,7 @@ func renderDelall() {
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "delete" {
 				delallFromTable()
-				renderDone()
+                renderMessage("Tasks deleted successfully!")
 			} else if buttonLabel == "cancel" {
 				if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 					panic(err)
@@ -400,10 +404,10 @@ func renderQuit() {
 
 }
 
-func renderDone() {
+func renderMessage(message string) {
 
 	modal := tview.NewModal().
-		SetText("Successful!").
+		SetText(message).
 		AddButtons([]string{"ok"}).
 		SetDoneFunc(func(buttonIndex int, buttonLabel string) {
 			if buttonLabel == "ok" {
