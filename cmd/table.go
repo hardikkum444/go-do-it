@@ -31,8 +31,8 @@ func renderTable() {
 	todosall := Todos{}
 	err := storage.Load(&todosall)
 	if err != nil {
+        renderMessage("Nothing to render, add a task!")
 		fmt.Println("Error loading todos:", err)
-		return
 	}
 
 	table.SetCell(0, 0, tview.NewTableCell("#").SetTextColor(tcell.ColorYellow))
