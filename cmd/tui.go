@@ -4,15 +4,11 @@ Copyright © 2024 man44 <man44@tutamail.com>
 package cmd
 
 import (
-	// "fmt"
 	"os"
 	"strconv"
-	// "strings"
 	"time"
-
 	"github.com/hardikkum444/go-do-it/storage"
 	"github.com/rivo/tview"
-	// "github.com/gdamore/tcell/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -59,7 +55,7 @@ func createMenuList() *tview.List {
 		AddItem("delete all", "delete all tasks", 'x', func() {
 			renderDelall()
 		}).
-		AddItem("render table", "render tasks table", 'p', func() {
+		AddItem("render table", "render tasks table", 'r', func() {
 			renderTable()
 		}).
 		AddItem("quit", "quit application", 'q', func() {
