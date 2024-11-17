@@ -58,6 +58,9 @@ func createMenuList() *tview.List {
 		AddItem("delete all", "delete all tasks", 'x', func() {
 			renderDelall()
 		}).
+		AddItem("render table", "render tasks table", 'p', func() {
+			renderTable()
+		}).
 		AddItem("quit", "quit application", 'q', func() {
 			renderQuit()
 		})
