@@ -14,17 +14,17 @@ run `yay -S go-do-it` || `paru -S go-do-it`
     `https://aur.archlinux.org/packages/go-do-it`
 
 ### Download Binaries
-You can download pre-built binaries for Windows, Android, and Linux from the releases page:
+You can download pre-built binaries for Windows, Android, and Linux from the releases page
     `https://github.com/hardikkum444/go-do-it/releases`
 
 Building Manually
 -----------------
-If you prefer to build go-do-it manually, follow these steps:
+If you prefer to build go-do-it manually, follow these steps
 
-1. Clone the repository:
+1. Clone the repository
     `git clone https://github.com/hardikkum444/go-do-it`
 
-2. Navigate to the cloned directory and run `go build` to build the system-specific binary:
+2. Navigate to the cloned directory and run `go build` to build the system-specific binary
 
 3. Run the created binary as an executable.
 
