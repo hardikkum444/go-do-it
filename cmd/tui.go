@@ -174,6 +174,10 @@ func renderToggle() {
 		taskIndexes = append(taskIndexes, strconv.Itoa(index))
 	}
 
+    if len(taskIndexes) == 0 {
+        renderMessage("No tasks to toggle!")
+    }
+
 	taskIndex := tview.NewDropDown().
 		SetLabel("Select a task to toggle completion (hit enter): ").
 		SetOptions(taskIndexes, nil)
