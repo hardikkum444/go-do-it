@@ -31,7 +31,7 @@ func renderTable() {
 	todosall := Todos{}
 	err := storage.Load(&todosall)
 	if err != nil {
-        renderMessage("Nothing to render, add a task!")
+		renderMessage("Error: Nothing to render, add a task!")
 		fmt.Println("Error loading todos:", err)
 	}
 

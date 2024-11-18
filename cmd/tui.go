@@ -4,12 +4,13 @@ Copyright © 2024 man44 <man44@tutamail.com>
 package cmd
 
 import (
-	"os"
-	"strconv"
-	"time"
+	"github.com/gdamore/tcell/v2"
 	"github.com/hardikkum444/go-do-it/storage"
 	"github.com/rivo/tview"
 	"github.com/spf13/cobra"
+	"os"
+	"strconv"
+	"time"
 )
 
 var tuiCmd = &cobra.Command{
@@ -66,17 +67,28 @@ func createMenuList() *tview.List {
 }
 
 func renderMenu() {
-
 	app = tview.NewApplication()
 
 	list = createMenuList()
 
 	centeredRoot = Center(40, 14, list)
 
+	list.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Rune() == 'k' {
+			return tcell.NewEventKey(tcell.KeyUp, 0, tcell.ModNone)
+		} else if event.Rune() == 'j' {
+			return tcell.NewEventKey(tcell.KeyDown, 0, tcell.ModNone)
+		} else if event.Rune() == 'h' {
+			return tcell.NewEventKey(tcell.KeyLeft, 0, tcell.ModNone)
+		} else if event.Rune() == 'l' {
+			return tcell.NewEventKey(tcell.KeyRight, 0, tcell.ModNone)
+		}
+		return event
+	})
+
 	if err := app.SetRoot(centeredRoot, true).EnableMouse(true).SetFocus(centeredRoot).Run(); err != nil {
 		panic(err)
 	}
-
 }
 
 func renderAdd() {
@@ -121,6 +133,10 @@ func renderEdit() {
 	storage := storage.NewStorage[Todos]("todos.json")
 	todosall := Todos{}
 	storage.Load(&todosall)
+
+	if len(todosall) == 0 {
+		renderMessage("Error: Nothing to edit, please add a task!")
+	}
 
 	taskIndexes := []string{}
 	for index, _ := range todosall {
@@ -174,9 +190,9 @@ func renderToggle() {
 		taskIndexes = append(taskIndexes, strconv.Itoa(index))
 	}
 
-    if len(taskIndexes) == 0 {
-        renderMessage("No tasks to toggle!")
-    }
+	if len(taskIndexes) == 0 {
+		renderMessage("Error: No tasks to toggle, please add a task!")
+	}
 
 	taskIndex := tview.NewDropDown().
 		SetLabel("Select a task to toggle completion (hit enter): ").
@@ -214,7 +230,7 @@ func renderDel() {
 	storage.Load(&todosall)
 
 	if len(todosall) == 0 {
-		renderMessage("Error: 0 items in list!")
+		renderMessage("Error: Nothing to delete, please add a task")
 	}
 
 	taskIndexes := []string{}
